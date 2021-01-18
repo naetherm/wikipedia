@@ -1,12 +1,21 @@
 #!/bin/bash
 
-# Adapted from the implementation of Niklas Schnelle (/nfs/datasets/wikipedia_english_original/download.sh)
+# Adapted from the implementation of Niklas Schnelle
 
 DATE="$(date --iso)"
 VERSION_FOLDER="$DATE"
-mkdir "$VERSION_FOLDER"
-pushd "$VERSION_FOLDER"
 
-wget --timestamping -i ../urllist.txt
+if [ ! -d $DATE ]
+then
+    mkdir "$VERSION_FOLDER"
+    pushd "$VERSION_FOLDER"
+    wget --timestamping -i ../urllist.txt
+    popd
+    cd ..
+fi
 
-popd
+if [ -L latest ]
+then
+    unlink latest
+fi
+ln -s $DATE latest
